@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: ghga/{{ .Chart.Name }}
+          image: ghga/{{ .Chart.Name }}:latest
           ports:
             - name: http
               containerPort: 8080
