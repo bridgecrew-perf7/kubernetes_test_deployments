@@ -1,16 +1,16 @@
 name: Update Version Of Helm Chart
 on:
-  workflow_dispatch:
-    inputs:
-      chartName:
-        description: 'Name of Chart'
-        required: true
-      newVersion:
-        description: 'New Version'
-        required: false
+  repository_dispatch: {}
+
+  # Usage:
+  # curl -X POST https://api.github.com/repos/<name_of_account>/<name_of_repo>/dispatches \
+  #  -H 'Accept: application/vnd.github.everest-preview+json' \
+  #  -u ${{ secrets.ACCESS_TOKEN }} \ # access token needs to be of format: <username>:<personal_access_token>
+  #  --data '{"event_type": "new_chart_version", "client_payload": { "chart_name": "name_of_chart", "new_version": "new_version" }}'
 
 jobs:
   updateVersion:
+    if: github.event.action == 'new_chart_version'
     runs-on: ubuntu-latest
     steps:
     - name: Check out code
@@ -19,12 +19,12 @@ jobs:
     - name: Replace appVersion in Chart.yaml
       run: |
         sed -i \
-          's/^appVersion:.*$/appVersion: ${{ github.event.inputs.newVersion }}/' \
-          './${{ github.event.inputs.chartName }}/Chart.yaml'
+          's/^appVersion:.*$/appVersion: ${{ github.event.client_payload.new_version }}/' \
+          './${{ github.event.client_payload.chart_name }}/Chart.yaml'
           
     - name: Commit & Push changes
       uses: actions-js/push@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         branch: main
-        message: 'update version of ${{ github.event.inputs.chartName }} to ${{ github.event.inputs.newVersion }}'
+        message: 'update version of ${{ github.event.client_payload.chart_name }} to ${{ github.event.client_payload.new_version }}'
