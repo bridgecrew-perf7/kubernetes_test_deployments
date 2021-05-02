@@ -1,0 +1,29 @@
+name: Update Version Of Helm Chart
+on:
+  workflow_dispatch:
+    inputs:
+      chartName:
+        description: 'Name of Chart'
+        required: true
+      newVersion:
+        description: 'New Version'
+        required: false
+
+jobs:
+  updateVersion:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    
+    - name: Replace appVersion in Chart.yaml
+      run: |
+        sed -i \
+          's/^appVersion:.*$/appVersion: ${{ github.event.workflow_dispatch.newVersion }}/' \
+          './${{ github.event.workflow_dispatch.chartName }}/Chart.yaml'
+          
+    - name: Commit & Push changes
+      uses: actions-js/push@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        message: 'update version of ${{ github.event.workflow_dispatch.chartName }} to ${{ github.event.workflow_dispatch.newVersion }}'
