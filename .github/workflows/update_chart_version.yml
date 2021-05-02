@@ -18,14 +18,12 @@ jobs:
     
     - name: Replace appVersion in Chart.yaml
       run: |
-        echo '${{ github.event.inputs.newVersion }}'
-        echo '${{ github.event.inputs.chartName }}'
         sed -i \
           's/^appVersion:.*$/appVersion: ${{ github.event.inputs.newVersion }}/' \
           './${{ github.event.inputs.chartName }}/Chart.yaml'
           
     - name: Commit & Push changes
-      uses: actions-js/push@master
+      uses: actions-js/push@main
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         message: 'update version of ${{ github.event.inputs.chartName }} to ${{ github.event.inputs.newVersion }}'
