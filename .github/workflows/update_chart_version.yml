@@ -23,7 +23,8 @@ jobs:
           './${{ github.event.inputs.chartName }}/Chart.yaml'
           
     - name: Commit & Push changes
-      uses: actions-js/push@main
+      uses: actions-js/push@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: main
         message: 'update version of ${{ github.event.inputs.chartName }} to ${{ github.event.inputs.newVersion }}'
