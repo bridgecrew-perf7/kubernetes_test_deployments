@@ -18,6 +18,8 @@ jobs:
     
     - name: Replace appVersion in Chart.yaml
       run: |
+        echo '${{ github.event.input.newVersion }}'
+        echo '${{ github.event.input.chartName }}'
         sed -i \
           's/^appVersion:.*$/appVersion: ${{ github.event.input.newVersion }}/' \
           './${{ github.event.input.chartName }}/Chart.yaml'
